@@ -217,6 +217,14 @@ func (a *App) AddCommand(cmd *Command) {
 	a.addCommand(cmd, true)
 }
 
+// 将一个命令组添加到命令当中
+func (a *App) AddCommandGroup(cmd []*Command) {
+	for _,c := range cmd {
+		a.addCommand(c,true)
+	}
+}
+
+
 // addCommand adds a new command.
 // If addHelpFlag is true, a help flag is automatically
 // added to the command which displays its usage on use.
