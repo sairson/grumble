@@ -19,7 +19,3 @@ require (
 	golang.org/x/sys v0.0.0-20201214210602-f9fddec55a1e // indirect
 	gopkg.in/AlecAivazis/survey.v1 v1.8.5
 )
-
-replace (
-	github.com/desertbit/grumble latest => github.com/sairson/grumble latest
-)
