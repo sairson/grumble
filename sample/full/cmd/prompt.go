@@ -33,20 +33,19 @@ func init() {
 		Name: "prompt",
 		Help: "set a custom prompt",
 	}
-	App.AddCommand(promptCommand)
 
-	promptCommand.AddCommand(&grumble.Command{
+
+	/*promptCommand.AddCommand(&grumble.Command{
 		Name: "set",
 		Help: "set a custom prompt",
 		Run: func(c *grumble.Context) error {
 			c.App.SetPrompt("CUSTOM PROMPT >> ")
 			return nil
 		},
-	})
-
+	})*/
 	promptgroup1 := []*grumble.Command{
 		&grumble.Command{
-			Name:      "aaa",
+			Name: "aaa",
 			Help: "aaaa",
 			Run: func(c *grumble.Context) error {
 				return nil
@@ -60,9 +59,10 @@ func init() {
 			},
 		},
 	}
+	App.AddCommandGroup(promptgroup1)
 	promptCommand.AddCommandGroup(promptgroup1)
-
-
+	//promptCommand.RemoveCommandGroup(promptgroup1)
+	//App.RemoveCommandGroup(promptgroup1)
 	promptCommand.AddCommand(&grumble.Command{
 		Name: "reset",
 		Help: "reset to default prompt",

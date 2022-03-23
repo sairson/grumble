@@ -54,6 +54,15 @@ func (c *Commands) Remove(name string) (found bool) {
 	return
 }
 
+// RemoveGroup 清楚一组命令
+func (c *Commands)RemoveGroup(cmd []*Command){
+	for _,command := range cmd {
+		// 删除命令
+		c.Remove(command.Name)
+	}
+}
+
+
 func (c *Commands) RemoveAll() {
 	var builtins []*Command
 

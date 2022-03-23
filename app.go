@@ -220,14 +220,14 @@ func (a *App) AddCommand(cmd *Command) {
 // AddCommandGroup 将一个命令组添加到命令当中
 func (a *App) AddCommandGroup(cmd []*Command) {
 	for _,c := range cmd {
-		a.addCommand(c,true)
+		a.addCommand(c,false)
 	}
 }
 
-// RemoveCommandGroup 移除一个命令
+// RemoveCommandGroup 移除App中一个命令组
 func (a *App) RemoveCommandGroup(cmd []*Command){
 	for _,c := range cmd {
-		c.Remove(c)
+		a.commands.Remove(c.Name)
 	}
 }
 
