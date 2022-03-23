@@ -118,6 +118,7 @@ func (a *App) Config() *Config {
 }
 
 // Commands returns the app's commands.
+// Access is not thread-safe. Only access during command execution.
 func (a *App) Commands() *Commands {
 	return &a.commands
 }
@@ -279,10 +280,10 @@ func (a *App) RunCommand(args []string) error {
 func (a *App) Run() (err error) {
 	defer a.Close()
 
-	// Sort all commands by their name.
+	// 按照名称排序已有的命令
 	a.commands.SortRecursive()
 
-	// Remove the program name from the args.
+	// 将程序移除，仅保留args后的命令
 	args := os.Args
 	if len(args) > 0 {
 		args = args[1:]
@@ -323,12 +324,37 @@ func (a *App) Run() (err error) {
 			a.printCommandHelp(a, cmd, a.isShell)
 			return nil
 		},
+		isBuiltin: true,
 	}, false)
 
 	// Check if help should be displayed.
 	if a.flagMap.Bool("help") {
 		a.printHelp(a, false)
 		return nil
+	}
+
+	// Add shell builtin commands.
+	// Ensure to add all commands before running the init hook.
+	// If the init hook does something with the app commands, then these should also be included.
+	if a.isShell {
+		a.AddCommand(&Command{
+			Name: "exit",
+			Help: "exit the shell",
+			Run: func(c *Context) error {
+				c.Stop()
+				return nil
+			},
+			isBuiltin: true,
+		})
+		a.AddCommand(&Command{
+			Name: "clear",
+			Help: "clear the screen",
+			Run: func(c *Context) error {
+				readline.ClearScreen(a.rl)
+				return nil
+			},
+			isBuiltin: true,
+		})
 	}
 
 	// Run the init hook.
@@ -344,24 +370,6 @@ func (a *App) Run() (err error) {
 		return a.RunCommand(args)
 	}
 
-	// Add shell builtin commands.
-	a.AddCommand(&Command{
-		Name: "exit",
-		Help: "exit the shell",
-		Run: func(c *Context) error {
-			c.Stop()
-			return nil
-		},
-	})
-	a.AddCommand(&Command{
-		Name: "clear",
-		Help: "clear the screen",
-		Run: func(c *Context) error {
-			readline.ClearScreen(a.rl)
-			return nil
-		},
-	})
-
 	// Create the readline instance.
 	a.rl, err = readline.NewEx(&readline.Config{
 		Prompt:                 a.currentPrompt,
@@ -370,6 +378,7 @@ func (a *App) Run() (err error) {
 		HistoryFile:            a.config.HistoryFile,
 		HistoryLimit:           a.config.HistoryLimit,
 		AutoComplete:           newCompleter(&a.commands),
+		VimMode:                a.config.VimMode,
 	})
 	if err != nil {
 		return err
@@ -461,7 +470,13 @@ Loop:
 		err = a.RunCommand(args)
 		if err != nil {
 			a.PrintError(err)
-			continue Loop
+			// Do not continue the Loop here. We want to handle command changes below.
+		}
+
+		// Sort the commands again if they have changed (Add or remove action).
+		if a.commands.hasChanged() {
+			a.commands.SortRecursive()
+			a.commands.unsetChanged()
 		}
 	}
 

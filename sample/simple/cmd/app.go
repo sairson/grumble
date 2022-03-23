@@ -65,6 +65,9 @@ func init() {
 		},
 	})
 
+
+
+
 	adminCommand := &grumble.Command{
 		Name:     "admin",
 		Help:     "admin tools",

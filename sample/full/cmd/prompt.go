@@ -44,6 +44,25 @@ func init() {
 		},
 	})
 
+	promptgroup1 := []*grumble.Command{
+		&grumble.Command{
+			Name:      "aaa",
+			Help: "aaaa",
+			Run: func(c *grumble.Context) error {
+				return nil
+			},
+		},
+		&grumble.Command{
+			Name: "bbbb",
+			Help: "nbbb",
+			Run: func(c *grumble.Context) error {
+				return nil
+			},
+		},
+	}
+	promptCommand.AddCommandGroup(promptgroup1)
+
+
 	promptCommand.AddCommand(&grumble.Command{
 		Name: "reset",
 		Help: "reset to default prompt",

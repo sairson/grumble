@@ -67,10 +67,11 @@ type Command struct {
 	// A non-nil Completer overrides the default behaviour.
 	Completer func(prefix string, args []string) []string
 
-	parent   *Command
-	flags    Flags
-	args     Args
-	commands Commands
+	parent    *Command
+	flags     Flags
+	args      Args
+	commands  Commands
+	isBuiltin bool // Whenever this is a build-in command not added by the user.
 }
 
 func (c *Command) validate() error {
@@ -115,4 +116,26 @@ func (c *Command) AddCommand(cmd *Command) {
 	cmd.registerFlagsAndArgs(true)
 
 	c.commands.Add(cmd)
+}
+
+// AddCommandGroup 添加一个组的命令
+func (c *Command)AddCommandGroup(cmd []*Command) {
+	// 遍历每一个命令
+	for _,cm := range cmd {
+		err := c.validate()
+		if err != nil {
+			panic(err)
+		}
+		cm.parent = c
+		cm.registerFlagsAndArgs(true)
+		c.commands.Add(cm)
+	}
+}
+
+// RemoveCommandGroup 移除一个组的命令
+func (c *Command)RemoveCommandGroup(cmd []*Command){
+	// 移除改组的命令
+	for _,cm := range cmd {
+		c.commands.Remove(cm.Name)
+	}
 }
