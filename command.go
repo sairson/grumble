@@ -139,3 +139,8 @@ func (c *Command)RemoveCommandGroup(cmd []*Command){
 		c.commands.Remove(cm.Name)
 	}
 }
+
+// Remove 移除一个命令
+func (c *Command)Remove(cmd *Command){
+	c.commands.Remove(cmd.Name)
+}

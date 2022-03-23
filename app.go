@@ -217,13 +217,19 @@ func (a *App) AddCommand(cmd *Command) {
 	a.addCommand(cmd, true)
 }
 
-// 将一个命令组添加到命令当中
+// AddCommandGroup 将一个命令组添加到命令当中
 func (a *App) AddCommandGroup(cmd []*Command) {
 	for _,c := range cmd {
 		a.addCommand(c,true)
 	}
 }
 
+// RemoveCommandGroup 移除一个命令
+func (a *App) RemoveCommandGroup(cmd []*Command){
+	for _,c := range cmd {
+		c.Remove(c)
+	}
+}
 
 // addCommand adds a new command.
 // If addHelpFlag is true, a help flag is automatically

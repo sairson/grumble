@@ -25,7 +25,7 @@
 package main
 
 import (
-	"github.com/sairson/grumble"
+	"github.com/desertbit/grumble"
 	"github.com/desertbit/grumble/sample/full/cmd"
 )
 
