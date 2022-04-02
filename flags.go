@@ -87,10 +87,10 @@ func (f *Flags) register(
 	// Short flags are empty if not set.
 	for _, fi := range f.list {
 		if fi.Short != "" && short != "" && fi.Short == short {
-			fi.Short = short
+			continue
 		}
 		if fi.Long == long {
-			fi.Long = long
+			continue
 		}
 	}
 

@@ -70,7 +70,7 @@ func (a *Args) register(
 	for _, ai := range a.list {
 		if ai.Name == name {
 			// 第二次注册将覆盖第一次注册结果
-			ai.Name = name
+			continue
 		}
 	}
 
