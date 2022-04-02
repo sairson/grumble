@@ -87,10 +87,10 @@ func (f *Flags) register(
 	// Short flags are empty if not set.
 	for _, fi := range f.list {
 		if fi.Short != "" && short != "" && fi.Short == short {
-			panic(fmt.Errorf("flag shortcut '%s' registered twice", short))
+			fi.Short = short
 		}
 		if fi.Long == long {
-			panic(fmt.Errorf("flag '%s' registered twice", long))
+			fi.Long = long
 		}
 	}
 

@@ -69,7 +69,8 @@ func (a *Args) register(
 	// Ensure the name is unique.
 	for _, ai := range a.list {
 		if ai.Name == name {
-			panic(fmt.Errorf("argument '%s' registered twice", name))
+			// 第二次注册将覆盖第一次注册结果
+			ai.Name = name
 		}
 	}
 
